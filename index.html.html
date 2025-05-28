@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scriptwriters Central</title>
+  <style>
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --bg-color: #111827;
+      --panel-color: #1f2937;
+      --text-color: #f9fafb;
+      --border-color: #374151;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+    
+    .title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, 
+        #3b82f6, #2563eb, #1d4ed8, #dc2626, #ef4444);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 300% 300%;
+      animation: blueRedFade 6s ease infinite;
+      display: inline-block;
+    }
+    
+    @keyframes blueRedFade {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .hidden { display: none; }
+    
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+      justify-content: center;
+    }
+    
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--border-radius);
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--box-shadow);
+      font-size: 1rem;
+    }
+    
+    button:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+    
+    button:disabled {
+      background-color: #4b5563;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .panel {
+      background-color: var(--panel-color);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      margin-top: 20px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 900px;
+    }
+    
+    .code-box {
+      width: 100%;
+      height: 180px;
+      margin-bottom: 15px;
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      resize: vertical;
+      background-color: #111827;
+      color: #e5e7eb;
+    }
+    
+    pre {
+      background-color: #111827;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      font-family: 'Fira Code', monospace;
+      color: #e5e7eb;
+    }
+    
+    .status-message {
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      display: none;
+    }
+    
+    .success {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      display: block;
+      border-left: 4px solid #10b981;
+    }
+    
+    .error {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: var(--danger-color);
+      display: block;
+      border-left: 4px solid var(--danger-color);
+    }
+    
+    .warning {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: var(--warning-color);
+      display: block;
+      border-left: 4px solid var(--warning-color);
+    }
+    
+    .info {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: var(--primary-color);
+      display: block;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .logout-btn { background-color: var(--danger-color); }
+    .logout-btn:hover { background-color: #dc2626; }
+    .refresh-btn { background-color: #4b5563; }
+    .refresh-btn:hover { background-color: #374151; }
+    .secondary-btn { background-color: #4b5563; }
+    .secondary-btn:hover { background-color: #374151; }
+
+    input {
+      padding: 12px;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      background-color: var(--panel-color);
+      color: var(--text-color);
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .history-panel {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(0,0,0,0.2);
+      border-radius: var(--border-radius);
+    }
+
+    .history-item {
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: var(--panel-color);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+    }
+
+    .history-item:hover {
+      background-color: #374151;
+    }
+
+    .history-timestamp {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .button-group { flex-direction: column; }
+      button { width: 100%; max-width: 300px; }
+      .title { font-size: 2.2rem; }
+      .toolbar { flex-direction: column; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+</head>
+<body>
+  <div class="header">
+    <h1 class="title">Scriptwriters Central</h1>
+    <p class="subtitle">Cloud-powered code collaboration</p>
+  </div>
+  
+  <div id="auth-buttons" class="button-group">
+    <button onclick="showVisitor()">Viewer Mode</button>
+    <button onclick="showAuthPanel('login')">Developer Login</button>
+    <button onclick="showAuthPanel('register')">Register</button>
+  </div>
+
+  <div id="auth-panel" class="hidden">
+    <div class="panel">
+      <h2 id="auth-title">Login</h2>
+      <div class="auth-container">
+        <input type="email" id="auth-email" placeholder="Email address" />
+        <input type="password" id="auth-password" placeholder="Password" />
+        <div id="auth-message" class="status-message"></div>
+        <button id="auth-action-btn" onclick="handleAuthAction()">Login</button>
+        <button class="secondary-btn" onclick="cancelAuth()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="developer" class="hidden panel">
+    <h2>Developer Panel <span id="user-email" style="font-size: 0.8rem; color: #9ca3af;"></span></h2>
+    <div id="save-status" class="status-message"></div>
+    
+    <div class="toolbar">
+      <button onclick="saveCode()" id="save-btn">Save Changes</button>
+      <button onclick="showPreview()">Show Preview</button>
+      <button onclick="showHistory()">View History</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <textarea class="code-box" id="code1" placeholder="// Code snippet 1"></textarea>
+    <textarea class="code-box" id="code2" placeholder="// Code snippet 2"></textarea>
+    <textarea class="code-box" id="code3" placeholder="// Code snippet 3"></textarea>
+    <textarea class="code-box" id="code4" placeholder="// Code snippet 4"></textarea>
+    <textarea class="code-box" id="code5" placeholder="// Code snippet 5"></textarea>
+    
+    <div id="history-container" class="hidden history-panel">
+      <h3>Version History</h3>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <div id="preview" class="hidden panel">
+    <h2>Code Preview</h2>
+    <div class="toolbar">
+      <button onclick="hidePreview()">Back to Editor</button>
+    </div>
+    <pre><code class="language-javascript" id="preview1"></code></pre>
+    <pre><code class="language-javascript" id="preview2"></code></pre>
+    <pre><code class="language-javascript" id="preview3"></code></pre>
+    <pre><code class="language-javascript" id="preview4"></code></pre>
+    <pre><code class="language-javascript" id="preview5"></code></pre>
+  </div>
+
+  <div id="viewer" class="hidden panel">
+    <h2>Viewer Panel</h2>
+    <div id="viewer-status" class="status-message"></div>
+    <pre><code class="language-javascript" id="view1">[Loading...]</code></pre>
+    <pre><code class="language-javascript" id="view2">[Loading...]</code></pre>
+    <pre><code class="language-javascript" id="view3">[Loading...]</code></pre>
+    <pre><code class="language-javascript" id="view4">[Loading...]</code></pre>
+    <pre><code class="language-javascript" id="view5">[Loading...]</code></pre>
+    
+    <button class="refresh-btn" onclick="refreshViewer()">Refresh Content</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  
+  <!-- Highlight.js for syntax highlighting -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+
+  <script>
+    // Firebase configuration - replace with your actual config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+    
+    const CODE_KEYS = ['code1', 'code2', 'code3', 'code4', 'code5'];
+    let currentUser = null;
+    let authMode = 'login';
+
+    // Initialize Highlight.js
+    hljs.highlightAll();
+
+    // Auth state observer
+    auth.onAuthStateChanged(user => {
+      currentUser = user;
+      if (user) {
+        // User is signed in
+        document.getElementById('user-email').textContent = `(${user.email})`;
+        loadDevContent();
+        hideAllPanels();
+        document.getElementById('developer').classList.remove('hidden');
+        document.getElementById('auth-buttons').classList.add('hidden');
+      } else {
+        // User is signed out
+        document.getElementById('auth-buttons').classList.remove('hidden');
+        hideAllPanels();
+        showVisitor();
+      }
+    });
+
+    function showAuthPanel(mode) {
+      authMode = mode;
+      const title = mode === 'login' ? 'Login' : 'Register';
+      const buttonText = mode === 'login' ? 'Login' : 'Register';
+      
+      document.getElementById('auth-title').textContent = title;
+      document.getElementById('auth-action-btn').textContent = buttonText;
+      
+      hideAllPanels();
+      document.getElementById('auth-panel').classList.remove('hidden');
+      document.getElementById('auth-email').focus();
+    }
+
+    function cancelAuth() {
+      document.getElementById('auth-panel').classList.add('hidden');
+      document.getElementById('auth-email').value = '';
+      document.getElementById('auth-password').value = '';
+      document.getElementById('auth-message').className = 'status-message';
+    }
+
+    async function handleAuthAction() {
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const authMessage = document.getElementById('auth-message');
+      const authBtn = document.getElementById('auth-action-btn');
+      
+      if (!email || !password) {
+        showAuthMessage('Please enter both email and password', 'error');
+        return;
+      }
+      
+      authBtn.disabled = true;
+      authBtn.innerHTML = '<span class="spinner-text"><span class="loading"></span> Processing...</span>';
+      
+      try {
+        if (authMode === 'login') {
+          await auth.signInWithEmailAndPassword(email, password);
+          showAuthMessage('Login successful!', 'success');
+        } else {
+          await auth.createUserWithEmailAndPassword(email, password);
+          showAuthMessage('Registration successful!', 'success');
+        }
+        
+        // Clear fields and hide auth panel after successful auth
+        document.getElementById('auth-email').value = '';
+        document.getElementById('auth-password').value = '';
+        setTimeout(() => {
+          document.getElementById('auth-panel').classList.add('hidden');
+        }, 1000);
+      } catch (error) {
+        let message = error.message;
+        if (error.code === 'auth/email-already-in-use') {
+          message = 'Email already in use. Please login instead.';
+        } else if (error.code === 'auth/user-not-found') {
+          message = 'User not found. Please register first.';
+        } else if (error.code === 'auth/wrong-password') {
+          message = 'Incorrect password. Please try again.';
+        } else if (error.code === 'auth/weak-password') {
+          message = 'Password should be at least 6 characters';
+        }
+        
+        showAuthMessage(message, 'error');
+        document.getElementById('auth-password').value = '';
+        document.getElementById('auth-password').focus();
+      } finally {
+        authBtn.disabled = false;
+        authBtn.textContent = authMode === 'login' ? 'Login' : 'Register';
+      }
+    }
+
+    function showAuthMessage(message, type) {
+      const authMessage = document.getElementById('auth-message');
+      authMessage.textContent = message;
+      authMessage.className = `status-message ${type}`;
+    }
+
+    function showVisitor() {
+      hideAllPanels();
+      loadViewerContent();
+      document.getElementById('viewer').classList.remove('hidden');
+    }
+
+    async function saveCode() {
+      const saveBtn = document.getElementById('save-btn');
+      const originalText = saveBtn.textContent;
+      
+      try {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-text"><span class="loading"></span> Saving...</span>';
+        
+        const updates = {};
+        const timestamp = Date.now();
+        const historyData = {};
+        
+        CODE_KEYS.forEach(key => {
+          const value = document.getElementById(key).value;
+          updates[key] = value;
+          historyData[key] = value;
+        });
+        
+        // Save current content
+        await database.ref('content').update(updates);
+        
+        // Save to history
+        if (currentUser) {
+          await database.ref(`history/${timestamp}`).set({
+            data: historyData,
+            timestamp: timestamp,
+            user: currentUser.email
+          });
+        }
+        
+        showStatusMessage('Changes saved to cloud!', 'success');
+      } catch (e) {
+        showStatusMessage('Error saving: ' + e.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+      }
+    }
+
+    function loadDevContent() {
+      showStatusMessage('Loading content...', 'info');
+      
+      database.ref('content').on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        CODE_KEYS.forEach(key => {
+          document.getElementById(key).value = data[key] || '';
+        });
+        showStatusMessage('Content loaded', 'success');
+      }, (error) => {
+        showStatusMessage('Error loading content: ' + error.message, 'error');
+      });
+    }
+
+    async function loadViewerContent() {
+      showStatusMessage('Loading content...', 'info', 'viewer');
+      
+      try {
+        const snapshot = await database.ref('content').once('value');
+        const data = snapshot.val() || {};
+        
+        CODE_KEYS.forEach(key => {
+          const content = data[key];
+          const viewElement = document.getElementById('view' + key.slice(4));
+          viewElement.textContent = content ? content : '[No content]';
+          hljs.highlightElement(viewElement);
+        });
+        
+        showStatusMessage('Content refreshed!', 'success', 'viewer');
+      } catch (error) {
+        showStatusMessage('Error loading content: ' + error.message, 'error', 'viewer');
+      }
+    }
+    
+    function refreshViewer() {
+      loadViewerContent();
+    }
+    
+    function logout() {
+      auth.signOut();
+    }
+    
+    function hideAllPanels() {
+      document.getElementById('auth-panel').classList.add('hidden');
+      document.getElementById('developer').classList.add('hidden');
+      document.getElementById('viewer').classList.add('hidden');
+      document.getElementById('preview').classList.add('hidden');
+      document.getElementById('history-container').classList.add('hidden');
+    }
+    
+    function showStatusMessage(message, type, panel = 'developer') {
+      const statusElement = document.getElementById(`${panel}-status`);
+      statusElement.textContent = message;
+      statusElement.className = `status-message ${type}`;
+      
+      setTimeout(() => {
+        statusElement.className = 'status-message';
+      }, 3000);
+    }
+
+    function showPreview() {
+      CODE_KEYS.forEach(key => {
+        const code = document.getElementById(key).value;
+        const previewElement = document.getElementById('preview' + key.slice(4));
+        previewElement.textContent = code || '[Empty]';
+        hljs.highlightElement(previewElement);
+      });
+      
+      hideAllPanels();
+      document.getElementById('preview').classList.remove('hidden');
+    }
+
+    function hidePreview() {
+      document.getElementById('preview').classList.add('hidden');
+      document.getElementById('developer').classList.remove('hidden');
+    }
+
+    async function showHistory() {
+      const historyContainer = document.getElementById('history-container');
+      const historyList = document.getElementById('history-list');
+      
+      if (historyContainer.classList.contains('hidden')) {
+        historyList.innerHTML = '<p>Loading history...</p>';
+        historyContainer.classList.remove('hidden');
+        
+        try {
+          const snapshot = await database.ref('history').orderByKey().limitToLast(10).once('value');
+          historyList.innerHTML = '';
+          
+          if (!snapshot.exists()) {
+            historyList.innerHTML = '<p>No history available</p>';
+            return;
+          }
+          
+          const historyItems = [];
+          snapshot.forEach(childSnapshot => {
+            const data = childSnapshot.val();
+            historyItems.push({
+              timestamp: data.timestamp,
+              date: new Date(parseInt(data.timestamp)).toLocaleString(),
+              user: data.user,
+              data: data.data
+            });
+          });
+          
+          // Sort by timestamp (newest first)
+          historyItems.sort((a, b) => b.timestamp - a.timestamp);
+          
+          historyItems.forEach(item => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+              <div><strong>${item.date}</strong> <span class="history-timestamp">by ${item.user}</span></div>
+            `;
+            
+            historyItem.addEventListener('click', () => {
+              CODE_KEYS.forEach(key => {
+                document.getElementById(key).value = item.data[key] || '';
+              });
+              historyContainer.classList.add('hidden');
+              showStatusMessage('Version restored from history', 'success');
+            });
+            
+            historyList.appendChild(historyItem);
+          });
+        } catch (error) {
+          historyList.innerHTML = '<p>Error loading history</p>';
+          console.error('History load error:', error);
+        }
+      } else {
+        historyContainer.classList.add('hidden');
+      }
+    }
+    
+    // Initialize with viewer mode by default
+    showVisitor();
+  </script>
+</body>
+</html>
